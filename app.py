@@ -600,40 +600,6 @@ def pay_debt(id):
     return redirect(f"/customer/{id}")
 
 
-# ===== LOGOUT =====
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect('/')
-
-
-# ===== RUN =====
-if __name__ == '__main__':
-    init_db()
-    app.run(host="0.0.0.0", port=10000)    # ===== SUPPLIERS =====
-@app.route('/suppliers', methods=['GET','POST'])
-@login_required
-def suppliers():
-    if request.method == 'POST':
-        name = request.form['name']
-        phone = request.form['phone']
-        address = request.form['address']
-
-        if not name.strip():
-            flash("Tên không được để trống", "error")
-            return redirect('/suppliers')
-
-        execute(
-            "INSERT INTO suppliers(name, phone, address) VALUES (%s,%s,%s)",
-            (name, phone, address)
-        )
-
-        return redirect('/suppliers')
-
-    data = query_all("SELECT * FROM suppliers")
-    return render_template("suppliers.html", suppliers=data)
-
-
 # ===== SUPPLIER DETAIL =====
 @app.route('/supplier/<int:id>')
 @login_required
