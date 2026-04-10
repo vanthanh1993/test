@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from functools import wraps
 import psycopg2
 from psycopg2.extras import RealDictCursor
+import os
 
 app = Flask(__name__)
 app.secret_key = 'secret123'
@@ -17,11 +18,8 @@ app.config.update(
 # ===== DB =====
 def get_conn():
     return psycopg2.connect(
-        host="localhost",
-        database="mydb",
-        user="postgres",
-        password="123456",
-        cursor_factory=RealDictCursor
+        os.environ.get("DATABASE_URL"),
+        sslmode='require'
     )
 
 def query_one(sql, params=()):
@@ -713,4 +711,7 @@ def logout():
 
 # ===== RUN =====
 if __name__ == '__main__':
-    init_db()
+    try:
+        init_db()
+    except Exception as e:
+        print("DB init error:", e)
