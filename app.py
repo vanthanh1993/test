@@ -15,10 +15,6 @@ app.config.update(
     PERMANENT_SESSION_LIFETIME=timedelta(minutes=30)
 )
 
-try:
-    init_db()
-except Exception as e:
-    print("DB init error:", e)
         
 # ===== DB =====
 def get_conn():
@@ -185,6 +181,11 @@ def init_db():
             "INSERT INTO users(username,password) VALUES(%s,%s)",
             ('admin', generate_password_hash('123456'))
         )
+
+try:
+    init_db()
+except Exception as e:
+    print("DB init error:", e)
 
 # ===== LOGIN =====
 @app.route('/', methods=['GET', 'POST'])
