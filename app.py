@@ -15,6 +15,11 @@ app.config.update(
     PERMANENT_SESSION_LIFETIME=timedelta(minutes=30)
 )
 
+try:
+    init_db()
+except Exception as e:
+    print("DB init error:", e)
+        
 # ===== DB =====
 def get_conn():
     return psycopg2.connect(
