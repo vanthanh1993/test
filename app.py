@@ -14,13 +14,13 @@ app.config.update(
     SESSION_COOKIE_SAMESITE='Lax',
     PERMANENT_SESSION_LIFETIME=timedelta(minutes=30)
 )
-
-        
+       
 # ===== DB =====
 def get_conn():
     return psycopg2.connect(
         os.environ.get("DATABASE_URL"),
-        sslmode='require'
+        sslmode='require',
+        cursor_factory=RealDictCursor
     )
 
 def query_one(sql, params=()):
