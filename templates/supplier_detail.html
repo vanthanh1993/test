@@ -1,0 +1,117 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="customer-page">
+
+<div class="customer-info card">
+
+    <h3>Thông tin nhà cung cấp</h3>
+
+    <div class="info-box">
+        <div class="info-item">
+            <span class="label">Tên</span>
+            <span class="value">{{ supplier.name }}</span>
+        </div>
+
+        <div class="info-item">
+            <span class="label">Số điện thoại</span>
+            <span class="value">📞 {{ supplier.phone }}</span>
+        </div>
+
+        <div class="info-item">
+            <span class="label">Địa chỉ</span>
+            <span class="value">📍 {{ supplier.address }}</span>
+        </div>
+    </div>
+
+    <div class="debt-box">
+        <span>Công nợ</span>
+        <b class="{% if debt > 0 %}money-red{% else %}money-green{% endif %}">
+            {{ debt | vnd }}
+        </b>
+    </div>
+
+    <form method="post" action="/supplier/pay" class="form-box">
+        <input type="hidden" name="supplier_id" value="{{ supplier.id }}">
+
+        <label>Thanh toán</label>
+        <input name="amount" class="money-input" placeholder="Nhập số tiền" required>
+
+        <div class="form-actions">
+            <button class="btn btn-primary flex-1">💸 Trả tiền</button>
+        </div>
+    </form>
+
+</div>
+
+    <!-- RIGHT: HISTORY -->
+    <div class="customer-list card">
+
+        <!-- IMPORT HISTORY -->
+        <h3>Lịch sử nhập hàng</h3>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Ngày</th>
+                    <th>Giá trị</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in imports %}
+                <tr onclick="toggleIMEI({{ i.id }})">
+                    <td>{{ i.date }}</td>
+                    <td class="money">{{ i.total | vnd }}</td>
+                </tr>
+
+                <tr id="imei-{{ i.id }}" style="display:none;">
+                    <td colspan="2">
+                        {% for im in i.imeis %}
+                            <span class="badge">{{ im }}</span>
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <br>
+
+        <!-- PAYMENT HISTORY -->
+        <h3>Lịch sử thanh toán</h3>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Ngày</th>
+                    <th>Số tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in payments %}
+                <tr>
+                    <td>{{ p.date }}</td>
+                    <td class="money money-green">{{ p.amount | vnd }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+function toggleIMEI(id){
+    const row = document.getElementById("imei-" + id);
+    if(row.style.display === "none"){
+        row.style.display = "table-row";
+    }else{
+        row.style.display = "none";
+    }
+}
+</script>
+
+<script src="{{ url_for('static', filename='js/money.js') }}"></script>
+
+{% endblock %}

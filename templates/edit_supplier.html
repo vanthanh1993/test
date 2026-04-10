@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="card">
+    <h3>Sửa nhà cung cấp</h3>
+
+    <form method="post" class="form-box">
+
+        <label>Tên nhà cung cấp</label>
+        <input name="name" value="{{ supplier.name }}" required>
+
+        <label>Số điện thoại</label>
+        <input name="phone" value="{{ supplier.phone }}">
+
+        <label>Địa chỉ</label>
+        <input name="address" value="{{ supplier.address }}">
+
+        <div class="form-actions">
+            <button class="btn btn-primary">💾 Lưu</button>
+            <a href="/suppliers" class="btn btn-secondary">Hủy Bỏ</a>
+        </div>
+
+    </form>
+</div>
+
+{% endblock %}

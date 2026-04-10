@@ -1,0 +1,145 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="customer-page">
+
+    <!-- LEFT: THÔNG TIN -->
+    <div class="customer-info card">
+
+        <h3>Thông tin khách</h3>
+
+        <!-- INFO -->
+        <div class="info-box">
+
+            <div class="info-item">
+                <span class="label">👤 Tên</span>
+                <span class="value">{{ customer.name }}</span>
+            </div>
+
+            <div class="info-item">
+                <span class="label">📞 SĐT</span>
+                <span class="value">{{ customer.phone }}</span>
+            </div>
+
+            <div class="info-item">
+                <span class="label">📍 Địa chỉ</span>
+                <span class="value">{{ customer.address }}</span>
+            </div>
+
+        </div>
+
+        <!-- DEBT -->
+        <div class="debt-box">
+            <span><b>Tổng Nợ :</b></span>
+            <b class="{% if debt > 0 %}money-red{% else %}money-green{% endif %}">
+                {{ debt | vnd }}
+            </b>
+        </div>
+
+        <!-- TRẢ NỢ -->
+        <form method="post" action="/pay_debt/{{ customer.id }}" class="form-box">
+
+            <label>Thanh toán</label>
+            <input name="amount" class="money-input" placeholder="VD: 500000">
+
+            <div class="form-actions">
+                <button class="btn btn-primary flex-1">💸 Trả nợ</button>
+            </div>
+
+        </form>
+
+    </div>
+
+    <!-- RIGHT: NỘI DUNG -->
+    <div class="customer-list">
+
+        <!-- LỊCH SỬ MUA -->
+        <div class="card">
+            <h3>Lịch sử mua hàng</h3>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Mã</th>
+                        <th>Ngày</th>
+                        <th>Tổng</th>
+                        <th>Đã trả</th>
+                        <th>Nợ</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% if orders %}
+                        {% for o in orders %}
+                        <tr onclick="toggleOrder({{ o.id }})">
+                            <td>#{{ o.id }}</td>
+                            <td>{{ o.date }}</td>
+                            <td class="money">{{ o.total | vnd }}</td>
+                            <td class="money money-green">{{ o.paid | vnd }}</td>
+                            <td class="money money-red">{{ o.debt | vnd }}</td>
+                        </tr>
+
+                        <!-- IMEI -->
+                        <tr id="order-{{ o.id }}" style="display:none;">
+                            <td colspan="5" style="font-size:12px; background:#f8fafc;">
+                                <b>IMEI:</b> {{ o.imeis | join(", ") }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="5" style="text-align:center; color:#999;">
+                                Chưa có đơn hàng
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- LỊCH SỬ THANH TOÁN -->
+        <div class="card">
+            <h3>Lịch sử thanh toán</h3>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Số tiền</th>
+                        <th>Ngày</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% if payments %}
+                        {% for p in payments %}
+                        <tr>
+                            <td class="money money-green">{{ p.amount | vnd }}</td>
+                            <td>{{ p.date }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="2" style="text-align:center; color:#999;">
+                                Chưa có thanh toán
+                            </td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- MONEY FORMAT -->
+<script src="{{ url_for('static', filename='js/money.js') }}"></script>
+
+<script>
+function toggleOrder(id){
+    let el = document.getElementById("order-" + id)
+    el.style.display = (el.style.display === "none") ? "table-row" : "none"
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="customer-layout">
+
+    <!-- LEFT: FORM -->
+    <div class="customer-form card">
+        <h3>Thêm nhà cung cấp</h3>
+
+        <form method="post" class="form-box">
+
+            <label>Tên nhà cung cấp</label>
+            <input name="name" placeholder="VD: Apple VN" required>
+
+            <label>Số điện thoại</label>
+            <input name="phone" placeholder="0123456789">
+
+            <label>Địa chỉ</label>
+            <input name="address" placeholder="Hà Nội / HCM">
+
+            <div class="form-actions">
+                <button class="btn btn-primary flex-1">➕ Thêm NCC</button>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- RIGHT: LIST -->
+    <div class="customer-list card">
+        <h3>Danh sách nhà cung cấp</h3>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Tên</th>
+                    <th>SĐT</th>
+                    <th>Địa chỉ</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in suppliers %}
+				<tr>
+                    <td><b>{{ s.name }}</b></td>
+                    <td>{{ s.phone }}</td>
+                    <td>{{ s.address }}</td>
+                    <td>
+
+                        <div class="inline-actions">
+                            <a href="/supplier/{{ s.id }}" class="btn btn-primary btn-sm">
+                                Chi tiết
+                            </a>
+							
+                            <a href="/edit_supplier/{{ s.id }}" class="btn btn-warning btn-sm">
+                                Sửa
+                            </a>
+
+                            <a href="/delete_supplier/{{ s.id }}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Xóa nhà cung cấp này?')">
+                                Xóa
+                            </a>
+                        </div>
+
+                    </td>
+				</tr>	
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

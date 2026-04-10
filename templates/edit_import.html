@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="card">
+    <h3>Sửa nhập kho</h3>
+
+    <form method="post">
+
+        <label>Tên sản phẩm</label>
+        <input name="name" value="{{ item.name }}" required>
+
+        <label>Giá nhập</label>
+        <input name="price"
+               value="{{ item.price }}"
+               class="money-input"
+               required>
+
+        <label>IMEI (mỗi dòng 1 cái)</label>
+        <textarea name="imeis" id="imeis" rows="6">{{ imeis }}</textarea>
+
+        <div class="summary">
+            <p>Số lượng: <b id="qty">0</b></p>
+            <p>Thành tiền: <b id="total">0 ₫</b></p>
+        </div>
+
+        <div class="form-actions">
+           <button class="btn btn-primary flex-7">💾 Lưu Lại</button>
+           <a href="/import" class="btn btn-danger flex-3">❌ Hủy Bỏ</a>
+        </div>
+
+    </form>
+</div>
+
+<!-- MONEY -->
+<script src="{{ url_for('static', filename='js/money.js') }}"></script>
+
+<!-- 🔥 AUTO CALC -->
+<script>
+let imeis = document.getElementById("imeis")
+let qty = document.getElementById("qty")
+let total = document.getElementById("total")
+let priceInput = document.querySelector(".money-input")
+
+function calc(){
+    let arr = imeis.value.split(/\s+/).filter(i=>i)
+    qty.innerText = arr.length
+
+    let priceRaw = priceInput.value.replace(/,/g,'') || 0
+    let price = parseInt(priceRaw) || 0
+
+    let sum = arr.length * price
+    total.innerText = sum.toLocaleString("vi-VN") + " ₫"
+}
+
+imeis.addEventListener("keyup", calc)
+priceInput.addEventListener("keyup", calc)
+
+// 🔥 chạy lần đầu
+calc()
+</script>
+
+{% endblock %}

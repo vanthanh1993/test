@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Dashboard</h2>
+
+<!-- ===== STATS ===== -->
+<div class="flex gap-20">
+
+    <div class="card flex-1">
+        <div>Tồn kho</div>
+        <h2>{{ stock }}</h2>
+    </div>
+
+    <div class="card flex-1">
+        <div>Doanh thu hôm nay</div>
+        <h2 class="money money-green">{{ revenue_day | vnd }}</h2>
+    </div>
+
+    <div class="card flex-1">
+        <div>Tổng doanh thu</div>
+        <h2 class="money">{{ revenue_total | vnd }}</h2>
+    </div>
+
+    <div class="card flex-1">
+        <div>Lợi nhuận</div>
+        <h2 class="money money-green">{{ profit | vnd }}</h2>
+    </div>
+
+</div>
+
+<!-- ===== LOW STOCK ===== -->
+<div class="card" style="margin-top:20px;">
+    <h3>⚠️ Sản phẩm sắp hết</h3>
+
+    {% if low_stock %}
+        <table class="table">
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Số lượng</th>
+            </tr>
+            {% for p in low_stock %}
+            <tr>
+                <td>{{ p.product_name }}</td>
+                <td class="money-red">{{ p.qty }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <div class="alert-success">✅ Không có sản phẩm sắp hết</div>
+    {% endif %}
+</div>
+
+{% endblock %}

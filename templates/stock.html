@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="card">
+
+    <h3>Thống Kê Tồn Kho</h3>
+
+    <!-- TOP BAR -->
+    <div class="flex" style="justify-content:space-between; align-items:center; margin-bottom:10px;">
+
+        <!-- SEARCH -->
+        <div class="flex gap-10" style="align-items:center;">
+            <input id="search_imei" placeholder="🔍 Nhập IMEI Rồi Ấn Enter ..." style="width:220px;">
+            <span id="imei_status" class="badge"></span>
+        </div>
+
+        <!-- TOTAL -->
+        <div class="money money-green">
+            <b>Tổng Tiền Hàng : {{ total_all | vnd }}</b>
+        </div>
+
+    </div>
+
+    <!-- TABLE -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Số lượng</th>
+                <th>IMEI</th>
+                <th>Thành tiền</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for row in data %}
+            <tr>
+                <td><b>{{ row.product_name }}</b></td>
+                <td>{{ row.qty }}</td>
+                <td style="font-size:12px;">
+                    {{ row.imeis | join(", ") }}
+                </td>
+                <td class="money">{{ row.total | vnd }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+<script>
+document.getElementById("search_imei").addEventListener("keydown", function(e){
+    if(e.key === "Enter"){
+        e.preventDefault()
+
+        let imei = e.target.value.trim()
+        if(!imei) return
+
+        fetch("/api/imei/" + imei)
+        .then(res => res.json())
+        .then(data => {
+            let el = document.getElementById("imei_status")
+
+            if(data.status === "error"){
+                el.innerText = "❌ imei không tồn tại"
+                el.className = "badge red"
+            }
+            else if(data.status === "sold"){
+                el.innerText = "⚠️ Sản phẩm đã bán"
+                el.className = "badge red"
+            }
+            else{
+                el.innerText = "✅ Sản phẩm đang tồn tại"
+                el.className = "badge green"
+            }
+        })
+        .catch(() => {
+            let el = document.getElementById("imei_status")
+            el.innerText = "❌ Lỗi server"
+            el.className = "badge red"
+        })
+    }
+})
+</script>
+
+{% endblock %}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+@page { size: A5; margin:10mm; }
+body{font-family:sans-serif}
+h2{text-align:center}
+</style>
+</head>
+<body>
+
+<h2>CÔNG PHƯỢNG STORE</h2>
+<p>54 Đình Hương, Thanh Hóa</p>
+<p>0962.934.555</p>
+
+<hr>
+
+{% for i in items %}
+{{i[2]}} - {{i[3]}}<br>
+{% endfor %}
+
+<hr>
+Tổng: {{order[3]}}<br>
+Đã trả: {{order[4]}}<br>
+Nợ: {{order[5]}}<br>
+
+<hr>
+<b>Cảm ơn quý khách!</b>
+
+</body>
+</html>

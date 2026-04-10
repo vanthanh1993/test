@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Code By Hoàng Hà</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Danh Mục</h2>
+    <a href="/dashboard">🏠 Trang Chủ</a>
+    <a href="/pos">🛒 Bán hàng</a>
+    <a href="/import">📦 Nhập hàng</a>
+    <a href="/stock">📊 Tồn kho</a>
+    <a href="/customers">👥 Con Nợ</a>
+    <a href="/suppliers">🏢 Chủ Nợ</a>
+    <a href="/logout">🚪 Đăng Xuất</a>
+</div>
+
+<div class="main">
+    <div class="content">
+
+        <!-- 🔊 LOA CỐ ĐỊNH -->
+        <div id="notify-box">
+            <div class="notify-icon">Công Phượng Store 🔊</div>
+
+            <div class="notify-content">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% for category, msg in messages %}
+                    <div class="notify-text {{ category }}">
+                        {{ msg }}
+                    </div>
+                  {% endfor %}
+                {% endwith %}
+            </div>
+        </div>
+
+        {% block content %}{% endblock %}
+    </div>
+</div>
+
+<script>
+setTimeout(()=>{
+    document.querySelectorAll(".notify-text").forEach(n=>{
+        n.style.transition="0.5s";
+        n.style.opacity="0";
+        setTimeout(()=>n.remove(),500);
+    });
+},3000);
+</script>

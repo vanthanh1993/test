@@ -1,0 +1,117 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="warehouse-container">
+
+    <!-- LEFT: NHẬP KHO -->
+    <div class="left-panel card">
+        <h3>Nhập sản phẩm</h3>
+
+        {% if session.get('msg') %}
+        <div class="alert-success">
+            {{ session.pop('msg') }}
+        </div>
+        {% endif %}
+
+        <form method="post" class="form-box">
+
+            <label>Tên sản phẩm</label>
+            <input name="name" required>
+			
+			<label>Nhà cung cấp</label>
+            <select name="supplier_id" required>
+                <option value="">-- Chọn nhà cung cấp --</option>
+                {% for s in suppliers %}
+                    <option value="{{ s.id }}">{{ s.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Giá nhập</label>
+            <input name="price" id="price" class="money-input" type="text" required>
+
+            <label>IMEI (mỗi dòng 1 cái)</label>
+            <textarea name="imeis" id="imeis" rows="6"></textarea>
+
+            <div class="summary">
+                <p>Số lượng : <b id="qty">0</b></p>
+                <p>Thành tiền : <b id="total">0 ₫</b></p>
+            </div>
+
+            <!-- ✅ BUTTON SYSTEM -->
+            <div class="form-actions">
+                <button class="btn btn-primary flex-1">➕ Thêm sản phẩm</button>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- RIGHT: LỊCH SỬ -->
+    <div class="right-panel card">
+        <h3>Lịch sử nhập kho</h3>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Ngày</th>
+                    <th>Tên</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                    <th>Thành tiền</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in imports %}
+                <tr>
+                    <td>{{ item.date }}</td>
+                    <td>{{ item.name }}</td>
+                    <td class="money">{{ "{:,.0f}".format(item.price) }} ₫</td>
+                    <td>{{ item.qty }}</td>
+                    <td class="money">{{ "{:,.0f}".format(item.total) }} ₫</td>
+                    <td>
+
+                        <!-- ✅ BUTTON GROUP -->
+                        <div class="inline-actions">
+                            <a href="/edit/{{ item.id }}" class="btn btn-warning btn-sm">Sửa</a>
+                            <a href="/delete/{{ item.id }}"
+                               class="btn btn-danger btn-sm"
+                               onclick="return confirm('Xóa sản phẩm này?')">
+                               Xóa
+                            </a>
+                        </div>
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- MONEY FORMAT -->
+<script src="{{ url_for('static', filename='js/money.js') }}"></script>
+
+<!-- AUTO CALC -->
+<script>
+let imeis = document.getElementById("imeis")
+let qty = document.getElementById("qty")
+let total = document.getElementById("total")
+let priceInput = document.getElementById("price")
+
+function calc(){
+    let arr = imeis.value.split(/\s+/).filter(i=>i)
+    qty.innerText = arr.length
+
+    let priceRaw = priceInput.value.replace(/,/g,'') || 0
+    let price = parseInt(priceRaw) || 0
+
+    let sum = arr.length * price
+    total.innerText = sum.toLocaleString("vi-VN") + " ₫"
+}
+
+imeis.addEventListener("keyup", calc)
+priceInput.addEventListener("keyup", calc)
+</script>
+
+{% endblock %}

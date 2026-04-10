@@ -1,0 +1,181 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="customer-layout">
+
+    <!-- LEFT: FORM -->
+    <div class="customer-form card">
+
+        <h3 id="form-title">Thêm khách hàng</h3>
+
+        <!-- ALERT -->
+        {% if session.get('msg') %}
+        <div class="alert-success">
+            {{ session.pop('msg') }}
+        </div>
+        {% endif %}
+
+        <form method="post" class="form-box">
+            <input type="hidden" name="id" id="cid">
+
+            <label>Tên khách hàng</label>
+            <input name="name" id="name" required>
+
+            <label>Số điện thoại</label>
+            <input name="phone" id="phone">
+
+            <label>Địa chỉ</label>
+            <input name="address" id="address">
+
+            <!-- BUTTON SYSTEM -->
+            <div class="form-actions">
+
+                <!-- ADD MODE -->
+                <button id="btn-add" class="btn btn-primary flex-1">
+                    Thêm khách hàng
+                </button>
+
+                <!-- EDIT MODE -->
+                <button id="btn-save" class="btn btn-primary flex-1" style="display:none;">
+                    Lưu Lại
+                </button>
+
+                <button type="button"
+                        id="btn-cancel"
+                        class="btn btn-secondary flex-1"
+                        style="display:none;"
+                        onclick="resetForm()">
+                    Hủy Bỏ
+                </button>
+
+                <button type="button"
+                        id="btn-delete"
+                        class="btn btn-danger flex-1"
+                        style="display:none;"
+                        onclick="deleteCustomer()">
+                    Xóa
+                </button>
+
+            </div>
+        </form>
+
+    </div>
+
+    <!-- RIGHT: LIST -->
+    <div class="customer-list card">
+
+        <h3>Danh sách khách hàng</h3>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Tên</th>
+                    <th>SĐT</th>
+                    <th>Địa chỉ</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for c in customers %}
+                <tr onclick="editCustomer('{{c[0]}}','{{c[1]}}','{{c[2]}}','{{c[3]}}')">
+
+                    <td>{{c[1]}}</td>
+                    <td>{{c[2]}}</td>
+                    <td>{{c[3]}}</td>
+
+                    <td>
+                        <div class="inline-actions">
+                            <a href="/customer/{{c[0]}}"
+                               class="btn btn-primary btn-sm"
+                               onclick="event.stopPropagation()">
+                               Chi tiết
+                            </a>
+                        </div>
+                    </td>
+
+                </tr>
+                {% endfor %}
+
+                {% if not customers %}
+                <tr>
+                    <td colspan="4" style="text-align:center; color:#999;">
+                        Chưa có khách hàng
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+<!-- SCRIPT -->
+<script>
+function setAddMode(){
+    document.getElementById("form-title").innerText="Thêm khách hàng"
+
+    document.getElementById("cid").value=""
+    document.getElementById("name").value=""
+    document.getElementById("phone").value=""
+    document.getElementById("address").value=""
+
+    document.getElementById("btn-add").style.display = "flex"
+    document.getElementById("btn-save").style.display = "none"
+    document.getElementById("btn-cancel").style.display = "none"
+    document.getElementById("btn-delete").style.display = "none"
+}
+
+function setEditMode(){
+    document.getElementById("form-title").innerText="Sửa khách hàng"
+
+    document.getElementById("btn-add").style.display = "none"
+    document.getElementById("btn-save").style.display = "flex"
+    document.getElementById("btn-cancel").style.display = "flex"
+    document.getElementById("btn-delete").style.display = "flex"
+}
+
+function editCustomer(id,name,phone,address){
+    setEditMode()
+
+    document.getElementById("cid").value=id
+    document.getElementById("name").value=name
+    document.getElementById("phone").value=phone
+    document.getElementById("address").value=address
+
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+function resetForm(){
+    setAddMode()
+}
+
+function deleteCustomer(){
+    let id = document.getElementById("cid").value
+
+    if(!id){
+        alert("Chưa chọn khách")
+        return
+    }
+
+    if(confirm("Xóa khách hàng này?")){
+        window.location = "/delete_customer/" + id
+    }
+}
+
+// init
+setAddMode()
+
+// auto hide alert
+setTimeout(()=>{
+    let alert = document.querySelector('.alert-success')
+    if(alert){
+        alert.style.transition = "0.5s"
+        alert.style.opacity = "0"
+        setTimeout(()=>alert.remove(),500)
+    }
+},3000)
+</script>
+
+{% endblock %}

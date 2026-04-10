@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="pos-container">
+
+    <!-- LEFT -->
+    <div class="pos-left card">
+
+        <input id="imei" placeholder="🔍 Nhập IMEI rồi Enter">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>IMEI</th>
+                    <th>Sản phẩm</th>
+                    <th>Tùy Chọn</th>
+                </tr>
+            </thead>
+            <tbody id="cart"></tbody>
+        </table>
+
+    </div>
+
+    <!-- RIGHT -->
+    <div class="pos-right card">
+
+        <div class="form-box">
+
+            <label>Khách hàng</label>
+            <select id="customer">
+                {% for c in customers %}
+                <option value="{{c[0]}}">{{c[1]}}</option>
+                {% endfor %}
+            </select>
+
+            <label>Giá bán</label>
+            <input id="price" class="money-input">
+
+            <label>Khách trả</label>
+            <input id="paid" class="money-input">
+
+            <h2>Tổng Tiền : <span id="total" class="money money-green">0 ₫</span></h2>
+
+            <!-- BUTTON -->
+            <div class="form-actions">
+                <button onclick="pay()" class="btn btn-primary flex-1">
+                    💳 Thanh toán
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/money.js') }}"></script>
+<script src="/static/js/pos.js"></script>
+
+{% endblock %}
